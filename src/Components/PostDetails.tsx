@@ -22,7 +22,7 @@ render(){
        <div >
            <h3> Post Id :-  {this.props.postid} </h3>
            <h4> Title :-  {this.props.title} </h4>
-           <h5> Data :- {this.props.postdata} </h5>
+           <h5> Description :- {this.props.postdata} </h5>
        </div>
        </div>
     );

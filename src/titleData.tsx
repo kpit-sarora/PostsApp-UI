@@ -12,14 +12,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ReportIcon from '@material-ui/icons/Report';
 
 interface Props{
-  setRedirect:Function
+  setRedirect:Function,
+  Logout:Function
 }
 
 export const MailFolderListItems = (props:Props)=>{
   console.log(props);
 return(
 <div>
-    <ListItem button onClick={()=>{props.setRedirect('/')}}>
+    <ListItem button onClick={()=>{props.setRedirect('/posts')}}>
       <ListItemIcon>
         <InboxIcon />
       </ListItemIcon>
@@ -36,6 +37,13 @@ return(
         <SendIcon />
       </ListItemIcon>
       <ListItemText primary="Products" />
+    </ListItem>
+
+     <ListItem button onClick={()=>{props.Logout()}}>
+      <ListItemIcon>
+        <SendIcon />
+      </ListItemIcon>
+      <ListItemText primary="Logout" />
     </ListItem>
    
   </div>

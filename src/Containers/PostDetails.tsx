@@ -7,8 +7,9 @@ import { connect } from 'react-redux';
 export interface OwnProps {
 }
 
-export function mapStateToProps({ posts }: StoreState,ownProps:any) {
+export function mapStateToProps( {loadPosts}:StoreState ,ownProps:any) {
   console.log("Map State to Props");
+  const posts = loadPosts.posts;
  const postid = ownProps.match.params.id; //this is used when we have parameters in URL 
  //const postid=ownProps.location.state.detail;
 

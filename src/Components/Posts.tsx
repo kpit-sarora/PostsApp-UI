@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import AddPostModal from '../Components/AddPostModal';
+
 
 const styles = (theme:Theme) => createStyles({
   layout: {
@@ -45,6 +47,11 @@ const styles = (theme:Theme) => createStyles({
      headerButtons: {
        marginTop: theme.spacing.unit * 4,
      },
+    
+     addPostModal: {
+     // width: '100%',
+      maxHeight: '500px'    }
+    
 });
 
 export interface Props {
@@ -52,6 +59,7 @@ export interface Props {
     isloading: boolean;
     posts:Array<Posts>;
     name:string;
+    isSignedIn:boolean;
     history:any,
     classes:{
       layout:string,
@@ -61,21 +69,41 @@ export interface Props {
       cardContent:string,
       headerUnit:string,
       headerContent:string,
-      headerButtons:string
+      headerButtons:string,
+      addPostModal:string,
+      root:string
      }
     LoadPosts: () => void;
   }
 
-  class Post extends React.Component<Props> {
+  interface State{
+    openAddPostModal:boolean
+  }
+  class Post extends React.Component<Props,State> {
     
    public constructor(props:Props)
     {
         super(props);
         this.handleView=this.handleView.bind(this);
+        this.state={
+          openAddPostModal:false
+        }
+      
+        this.handleAddPostClick=this.handleAddPostClick.bind(this);
+        this.handleAddPostClose=this.handleAddPostClose.bind(this);
     }
     componentWillMount(){
       this.props.LoadPosts();
     }
+
+    handleAddPostClick ()  {
+      console.log("Handle Add Post Click");
+      this.setState({ openAddPostModal: true });
+    };
+  
+    handleAddPostClose =() => {
+      this.setState( {openAddPostModal: false });
+    };
 
     /** @type ... */
     handleView(postid:number){
@@ -90,8 +118,18 @@ export interface Props {
           });
     }
      render() {
-    
+    /*
+      if(this.props.isSignedIn==false)
+      {
+        return(
+          <div>
+            Hello
+            </div>
+        )
+      }
+      */
       console.log(this.props.name);
+      console.log(this.state.openAddPostModal);
     //  return(<div>Hello</div>)
 
     let condRender = null;
@@ -114,7 +152,7 @@ export interface Props {
          else
          {
            console.log("Post Loaded");
-         
+         console.log(posts);
             condRender = 
             <div>
                 <div className={classNames(classes.layout, classes.cardGrid)}>
@@ -125,7 +163,7 @@ export interface Props {
                 <Card className={classes.card}>
                   
                   <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="headline" component="h2">
+                    <Typography gutterBottom variant="h5" component="h2">
                       {post.title}
                     </Typography>
                     <Typography>
@@ -156,16 +194,16 @@ export interface Props {
       <div >
          <div className={classes.headerUnit}>
           <div className={classes.headerContent}>
-            <Typography variant="display3" align="center" color="textPrimary">
+            <Typography variant="h2" align="center" color="textPrimary">
               Post's App
             </Typography>
-            <Typography variant="title" align="center" color="textSecondary" paragraph>
+            <Typography variant="h6" align="center" color="textSecondary" paragraph>
               This application is developed using TypeScript,React,Redux and Material-UI. 
             </Typography>
             <div className={classes.headerButtons}>
               <Grid container spacing={16} justify="center">
                 <Grid item>
-                  <Button variant="contained" color="primary">
+                  <Button variant="contained" color="primary" onClick={()=>this.handleAddPostClick()}>
                     Add New Post
                   </Button>
                 </Grid>
@@ -174,7 +212,14 @@ export interface Props {
             </div>
           </div>
         </div>
+
+           
       
+           <AddPostModal
+            classes={this.props.classes.addPostModal}
+            open={this.state.openAddPostModal}
+            onClose={this.handleAddPostClose}
+          />
         {condRender}
       
      </div>  

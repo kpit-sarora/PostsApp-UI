@@ -10,6 +10,9 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import { MailFolderListItems} from './titleData';
 import { createStyles } from '../node_modules/@material-ui/core';
+import {Dispatch} from 'redux';
+import * as loginActions from './Actions/userLogin.actions';
+import { connect } from 'react-redux';
 
 const styles = createStyles({
     root: {
@@ -20,6 +23,7 @@ const styles = createStyles({
     },
     menuButtonRight: {
         marginRight: -25
+      //paddingRight:-25
       },
     list: {
         width: 200,
@@ -27,12 +31,14 @@ const styles = createStyles({
   });
   
 interface Props{
-  history:any,
+  history?:any,
   classes: {
     list:string,
     flex:string,
     menuButtonRight:string
-  };
+  },
+  Logout: () => void,
+  name:string
 }
 
 interface State{
@@ -53,6 +59,8 @@ class Swipe extends React.Component<Props,State> {
         super(props);
         this.setRedirect=this.setRedirect.bind(this);
         this.state.width = window.innerWidth;
+        this.Logout=this.Logout.bind(this);
+        console.log(this.props.name);
       }
       direction : Direction= {
         right: false,
@@ -84,20 +92,29 @@ class Swipe extends React.Component<Props,State> {
         this.props.history.push({
           pathname: path,
         });
+
+        
         
        // browserHistory.push('/about');
+      }
+
+      Logout(){
+        this.props.Logout();
+        this.props.history.push({
+          pathname: '/'
+        });
       }
    
       render() {
         const {classes}=this.props;
         //It could be written as const classes = this.props.classes
-        console.log(this.props);
+      //  console.log(this.props);
          const  width  = this.state.width;
         const isMobile = width <= 500;
 
         const sideList = (
           <div className={classes.list}>
-            <List> <MailFolderListItems setRedirect={this.setRedirect}/></List>
+            <List> <MailFolderListItems setRedirect={this.setRedirect} Logout={this.Logout}/></List>
           </div>
         );
       
@@ -106,7 +123,7 @@ class Swipe extends React.Component<Props,State> {
               <div>
             <AppBar position="static">
               <Toolbar>
-                <Typography variant="title" color="inherit" className={classes.flex}>
+                <Typography variant="h6" color="inherit" className={classes.flex}>
                   Post's App
                 </Typography>
                 <IconButton  color="inherit" aria-label="Menu" className={classes.menuButtonRight}
@@ -135,13 +152,15 @@ class Swipe extends React.Component<Props,State> {
             <div >
             <AppBar position="static">
               <Toolbar>
-                <Typography variant="title" color="inherit" className={classes.flex}>
+                <Typography variant="h6" color="inherit" className={classes.flex}>
                Post's App
                 </Typography>
-                <Button color="inherit" onClick={()=>this.setRedirect('/')}>Home</Button> 
+                <Button color="inherit" onClick={()=>this.setRedirect('/posts')}>Home</Button> 
                 <Button color="inherit" onClick={()=>this.setRedirect('/about')}>About us</Button>  
                 <Button color="inherit"  onClick={()=>this.setRedirect('/products')}>Products</Button>
+                <Button color="inherit"  onClick={()=>this.Logout(
 
+                )}>Logout</Button>
               </Toolbar>
             </AppBar>
           </div>
@@ -149,6 +168,20 @@ class Swipe extends React.Component<Props,State> {
         }
       }
 }
+export function mapStateToProps(props:any) {
+  console.log(props);
+ const name='Sahil';
+return {
+   name
+  }
+}
 
 
-export default  withStyles(styles)(Swipe);
+export function mapDispatchToProps(dispatch: Dispatch) {
+  return {
+    Logout: () => dispatch<any>(loginActions.UserLogout())
+  } 
+}
+
+
+export default  connect(mapStateToProps,mapDispatchToProps)(withStyles(styles)(Swipe));
